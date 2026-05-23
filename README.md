@@ -150,7 +150,6 @@ HSU/
 ├── crawler.py                 # rule.hansung.ac.kr 크롤러
 ├── make_rules_json.py         # history → 최신판 hansung_rules.json
 ├── build_db.py                # Upstage 임베딩 + DB 적재
-├── migrate_v3.sql             # DB 마이그레이션 (384 → 4096차원)
 ├── index.html                 # 메인 (챗봇 + 규정 목록)
 ├── upload.html                # 관리자 (추가/개정/회의록/일괄치환/충돌분석 + 활동 로그)
 ├── login.html                 # 관리자 로그인
@@ -203,22 +202,17 @@ docker run -d --name hansung-db \
   pgvector/pgvector:pg16
 ```
 
-### 6. DB 스키마 마이그레이션
-```bash
-docker cp migrate_v3.sql hansung-db:/tmp/
-docker exec -it hansung-db psql -U postgres -d hansungrules -f /tmp/migrate_v3.sql
 ```
-
-### 7. 데이터 준비
+### 6. 데이터 준비
 - **옵션 A (빠름)**: 저장소의 `hansung_rules_history.json` 그대로 사용
 - **옵션 B (1~2시간)**: `python crawler.py` (쿠키 갱신 후) → `python make_rules_json.py`
 
-### 8. DB 빌드 (15~30분)
+### 7. DB 빌드 (15~30분)
 ```bash
 python build_db.py
 ```
 
-### 9. 서버 실행
+### 8. 서버 실행
 ```bash
 python server.py
 # 또는: uvicorn server:app --reload --port 8000
